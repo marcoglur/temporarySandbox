@@ -2,7 +2,7 @@
 
 `Tn.scala` is a simple experimantal tool for computing and listing triangular numbers.
 Its capabilities are generating a list of subsequent triangular numbers by their ordinal positions or just putting the given 
-exponential position of each **_T_<sub>n</sub>** in sequence to print some amazing triangluar palindromes.
+exponential position of each **_T_<sub>n</sub>** in sequence to print some amazing triangular palindromes.
 
 ## Some Examples
 ```bash
