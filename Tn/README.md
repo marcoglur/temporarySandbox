@@ -1,6 +1,6 @@
 #_T_<sub>n</sub> scala
 
-`Tn.scala` is a simple experimantal tool for computing and listing triangular numbers.
+`Tn.scala` is a simple experimental tool for computing and listing triangular numbers.
 Its capabilities are generating a list of subsequent triangular numbers by their ordinal positions or just putting the given 
 exponential position of each **_T_<sub>n</sub>** in sequence to print some amazing triangular palindromes.
 
