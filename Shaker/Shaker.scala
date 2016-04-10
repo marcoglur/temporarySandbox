@@ -38,14 +38,14 @@ def shakeWord(s: String): String = {
       { case s: String => shakeWord(s) }
     ).mkString("-")
   }
-  if (s.last.toString.matches("""[\[,-\\+:;?!%&\)\.\"\']"""))
+  if (s.last.toString.matches("""\p{Punct}"""))
     return shakeWord(s.init) + s.last
 
   if (s(0).toString.matches("""\("'"""))
     return s(0) + shakeWord(s.tail)
 
   if (s.length < 4) return s
-  if (!s.tail.matches("^[a-zä-ü]*$")) return s
+  if (!s.tail.matches("""^[\p{L}&&[^\p{Lu}]]*$""")) return s
 
   val sb = shuffle(s.init.tail)
   s.head + sb + s.last
@@ -74,12 +74,13 @@ def doSomeTests() {
   // testing a shakable processing
   def test(s: String): Unit = {
     val t = shake(s)
+    assume(s.length > 3)
     println(s"testing '$s'")
-    assume(!(t == s && s.substring(1, s.length - 2).distinct.length > 1), s"shakable '$s' to get '$t'")
-    assume(s(0) == t(0), s"shakable '$s' to get '$t'")
-    assume(s.last == t.last, s"shakable '$s' to get '$t'")
-    assume(s.init.tail.length == t.init.tail.length, s"shakable '$s' to get '$t'")
-    assume(s.init.tail.sorted == t.init.tail.sorted, s"shakable '$s' to get '$t'")
+    assert(!(t == s && s.substring(1, s.length - 2).distinct.length > 1), s"shakable '$s' to get '$t'")
+    assert(s(0) == t(0), s"shakable '$s' to get '$t'")
+    assert(s.last == t.last, s"shakable '$s' to get '$t'")
+    assert(s.init.tail.length == t.init.tail.length, s"shakable '$s' to get '$t'")
+    assert(s.init.tail.sorted == t.init.tail.sorted, s"shakable '$s' to get '$t'")
   }
   // simple testing
   // (input, expected)
@@ -93,7 +94,7 @@ def doSomeTests() {
     ("TeSt", "TeSt"),
     ("tEst", "tEst"))) {
     println(s"testing '${t._1}'")
-    assume(t._2 == shake(t._1), s"shake '${t._1}' to get '${t._2}'")
+    assert(t._2 == shake(t._1), s"shake '${t._1}' to get '${t._2}'")
   }
   // random testing of shakable strings
   for (x <- 3 to 24) {
