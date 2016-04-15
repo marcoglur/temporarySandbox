@@ -9,7 +9,10 @@ val settings = loadSettings()
 
 settings.get("test") match {
   case None => //
-  case _ => doSomeTests()
+  case _ =>
+    import scala.language.postfixOps
+    import sys.process._
+    sys.exit("./Test.scala" !)
 }
 
 val in = settings.get("file") match {
@@ -68,43 +71,6 @@ def shuffle(s: String): String = {
 }
 
 
-
-
-def doSomeTests() {
-  // testing a shakable processing
-  def test(s: String): Unit = {
-    val t = shake(s)
-    assume(s.length > 3)
-    println(s"testing '$s'")
-    assert(!(t == s && s.substring(1, s.length - 2).distinct.length > 1), s"shakable '$s' to get '$t'")
-    assert(s(0) == t(0), s"shakable '$s' to get '$t'")
-    assert(s.last == t.last, s"shakable '$s' to get '$t'")
-    assert(s.init.tail.length == t.init.tail.length, s"shakable '$s' to get '$t'")
-    assert(s.init.tail.sorted == t.init.tail.sorted, s"shakable '$s' to get '$t'")
-  }
-  // simple testing
-  // (input, expected)
-  for (t <- List(
-    ("tes", "tes"),
-    ("test", "tset"),
-    ("Test", "Tset"),
-    ("tEst", "tEst"),
-    ("tesT", "tesT"),
-    ("TesT", "TesT"),
-    ("TeSt", "TeSt"),
-    ("tEst", "tEst"))) {
-    println(s"testing '${t._1}'")
-    assert(t._2 == shake(t._1), s"shake '${t._1}' to get '${t._2}'")
-  }
-  // random testing of shakable strings
-  for (x <- 3 to 24) {
-    val s = new StringBuffer()
-    (0 to x) foreach { _ =>
-      s append ('a' + (Math.random() * 24)).toChar
-    }
-    test(s.toString)
-  }
-}
 
 
 def loadSettings(): Map[String, Any] = {
