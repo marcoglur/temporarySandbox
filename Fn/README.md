@@ -25,4 +25,6 @@ Fn.usage     false
 Fn.blackDigs  
 Fn.calculate false
 Fn.iterate   <!Fn.calculate>
+Fn.DIG_B     \u00A0
+Fn.DIG_W     \u2022
 ```

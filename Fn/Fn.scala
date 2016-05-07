@@ -15,6 +15,8 @@ var quiet = sys.props.getOrElse("Fn.quiet", "false").toBoolean
 var usage = sys.props.getOrElse("Fn.usage", "false").toBoolean
 var blackDigs: String = sys.props.getOrElse("Fn.blackDigs", "")
 
+val DIG_B: String = sys.props.getOrElse("Fn.DIG_B", "\u00A0")
+val DIG_W: String = sys.props.getOrElse("Fn.DIG_W", "\u2022")
 val calculate = sys.props.getOrElse("Fn.calculate", "false").toBoolean
 val iterate = sys.props.getOrElse("Fn.iterate", (!calculate).toString).toBoolean
 
@@ -214,9 +216,9 @@ object calculated {
 
   import java.math.MathContext
 
-  lazy val one = BigDecimal(1, new MathContext(end / 3))
-  lazy val two = one + 1
-  lazy val five = two + 3
+  lazy val one = BigDecimal(1, new MathContext(Math.max(end / 4, MathContext.DECIMAL32.getPrecision)))
+  lazy val two = one + one
+  lazy val five = two + two + one
   lazy val sqrt5 = {
     var x0 = BigDecimal(0)
     var x1 = BigDecimal(Math.sqrt(five.doubleValue()))
@@ -228,13 +230,13 @@ object calculated {
     }
     x1
   }
-
+  lazy val φ = (sqrt5 + one) /two
+  lazy val ψ = one - φ
 
   def apply(c: Int): BigInt = {
     def f(n: Int): BigInt = {
       if (n == 1 || n == 2) 1
-      else (one / sqrt5 * ((one + sqrt5) / two).pow(n)
-        - one / sqrt5 * ((one - sqrt5) / two).pow(n)).toBigInt
+      else (φ.pow(n) - ψ.pow(n)) / sqrt5 toBigInt()
     }
     val cur = f(c)
     if (lister) {
@@ -257,7 +259,7 @@ object calculated {
       if (blackDigs.isEmpty) {
         printOut(x)
       } else {
-        printOut(if (blackDigs contains x) " " else "\u002E")
+        printOut(if (blackDigs contains x) DIG_B else DIG_W)
       }
     }
 
@@ -289,7 +291,7 @@ object iterated {
         if (blackDigs.isEmpty) {
           printOut(x)
         } else {
-          printOut(if (blackDigs contains x) " " else "\u002E")
+          printOut(if (blackDigs contains x) DIG_B else DIG_W)
         }
       }
     }
@@ -305,7 +307,7 @@ if (calculate) {
   logln("\n Calculated in " + (System.currentTimeMillis() - start) + "ms")
   start = System.currentTimeMillis()
 }
-if (iterate) {
+if (iterate || !calculate) {
   iterated()
   logln("\n Iterated in " + (System.currentTimeMillis() - start) + "ms")
 }
