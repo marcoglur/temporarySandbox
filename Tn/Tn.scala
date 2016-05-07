@@ -193,27 +193,9 @@ def readArgs() {
 def printOut(x: Any) = writer.print(x)
 def logln(x: Any) = if (!quiet) log.println(x)
 
-
-readArgs()
-
-
-
-
-lazy val padL = Integer.toString(end, rad).length
-lazy val padR = 1
-lazy val initLister = "\n n" + " " * (padL - 1) + " | Tn\n" + " " + "-" * padL + "-+-" + "-" * 20
-
-if (lister) {
-  logln(initLister)
-}
-
-
-var charPos = 0
-
-object calculated {
-  def apply(c: Int = 0): BigInt = {
-    val cur: BigInt = (c * (c + 1)) / 2
-
+object curOut {
+  var charPos = 0
+  def apply(c: Int, cur: BigInt): Unit = {
     if (lister) {
       val s = Integer.toString(c, rad)
       val l = s.length
@@ -237,6 +219,29 @@ object calculated {
         printOut(if (blackDigs contains x) DIG_B else DIG_W)
       }
     }
+  }
+}
+
+readArgs()
+
+
+
+
+lazy val padL = Integer.toString(end, rad).length
+lazy val padR = 1
+lazy val initLister = "\n n" + " " * (padL - 1) + " | Tn\n" + " " + "-" * padL + "-+-" + "-" * 20
+
+if (lister) {
+  logln(initLister)
+}
+
+
+
+
+object calculated {
+  def apply(c: Int = 0): BigInt = {
+    val cur: BigInt = (c * (c + 1)) / 2
+    curOut(c, cur)
 
     if (c == end) cur
     else calculated(c + 1)
@@ -247,29 +252,7 @@ object iterated {
   def apply(c: Int = 0, last: BigInt = 0): BigInt = {
     val cur = last + c
     if (c >= n) {
-      if (lister) {
-        val s = Integer.toString(c, rad)
-        val l = s.length
-        val pad = " " * (padL - l)
-        val x = cur.toString(rad)
-        val pad2 = " " * (padR - x.length)
-        printOut(" " + pad + s + " | " + pad2 + x + "\n")
-      } else {
-        if (0 != lineWidth) {
-          if (charPos == lineWidth) {
-            printOut("\n")
-            charPos = 0
-          }
-          charPos += 1
-        }
-        import scala.math.pow
-        val x = ((cur % pow(rad, pos + 1).toInt) / pow(rad, pos).toInt).toString(rad)
-        if (blackDigs.isEmpty) {
-          printOut(x)
-        } else {
-          printOut(if (blackDigs contains x) DIG_B else DIG_W)
-        }
-      }
+      curOut(c, cur)
     }
     if (c == end) cur
     else iterated(c + 1, cur)
