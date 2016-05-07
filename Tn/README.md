@@ -26,5 +26,7 @@ Tn.quiet     false
 Tn.usage     false
 Tn.blackDigs     
 Tn.iterate   false
-Tn.calculate <!Tn.iterate>
+Tn.calculate <!Tn.iterate>      
+Tn.DIG_B     \u00A0
+Tn.DIG_W     \u2022
 ```

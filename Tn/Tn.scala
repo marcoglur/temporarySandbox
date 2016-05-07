@@ -15,6 +15,8 @@ var quiet = sys.props.getOrElse("Tn.quiet", "false").toBoolean
 var usage = sys.props.getOrElse("Tn.usage", "false").toBoolean
 var blackDigs: String = sys.props.getOrElse("Tn.blackDigs", "")
 
+val DIG_B: String = sys.props.getOrElse("Fn.DIG_B", "\u00A0")
+val DIG_W: String = sys.props.getOrElse("Fn.DIG_W", "\u2022")
 val iterate = sys.props.getOrElse("Tn.iterate", "false").toBoolean
 val calculate = sys.props.getOrElse("Tn.calculate", (!iterate).toString).toBoolean
 
@@ -232,7 +234,7 @@ object calculated {
       if (blackDigs.isEmpty) {
         printOut(x)
       } else {
-        printOut(if (blackDigs contains x) " " else "\u002E")
+        printOut(if (blackDigs contains x) DIG_B else DIG_W)
       }
     }
 
@@ -265,7 +267,7 @@ object iterated {
         if (blackDigs.isEmpty) {
           printOut(x)
         } else {
-          printOut(if (blackDigs contains x) " " else "\u002E")
+          printOut(if (blackDigs contains x) DIG_B else DIG_W)
         }
       }
     }
@@ -281,7 +283,7 @@ if (calculate) {
   logln("\n Calculated in " + (System.currentTimeMillis() - start) + "ms")
   start = System.currentTimeMillis()
 }
-if (iterate) {
+if (iterate || !calculate) {
   iterated()
   logln("\n Iterated in " + (System.currentTimeMillis() - start) + "ms")
 }
